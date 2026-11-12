@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cyber">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REVENANT - Mahindiyans 26 Batch Party</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- QRCode & html2canvas Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        /* ==========================================
+           DYNAMIC THEME ENGINE (3 LIVE STYLES)
+           ========================================== */
+        :root, [data-theme="cyber"] {
+            --bg-void: #05050A;
+            --bg-surface: rgba(16, 16, 26, 0.86);
+            --bg-card-inner: rgba(255, 0, 78, 0.04);
+            --primary: #FF004E;
+            --primary-light: #FF6694;
+            --primary-glow: rgba(255, 0, 78, 0.45);
+            --secondary: #00F0FF;
+            --secondary-glow: rgba(0, 240, 255, 0.35);
+            --text-main: #FFFFFF;
+            --text-muted: #A0A0B8;
+            --border-color: rgba(255, 0, 78, 0.32);
+            --ticket-bg: #0B0B12;
+            --gradient-primary: linear-gradient(135deg, #FF004E 0%, #D60041 50%, #9E0030 100%);
+        }
+
+        [data-theme="gold"] {
+            --bg-void: #070709;
+            --bg-surface: rgba(18, 17, 22, 0.88);
+            --bg-card-inner: rgba(255, 184, 0, 0.04);
+            --primary: #FFB800;
+            --primary-light: #FDE68A;
+            --primary-glow: rgba(255, 184, 0, 0.42);
+            --secondary: #38BDF8;
+            --secondary-glow: rgba(56, 189, 248, 0.3);
+            --text-main: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --border-color: rgba(255, 184, 0, 0.32);
+            --ticket-bg: #0D0C10;
+            --gradient-primary: linear-gradient(135deg, #FFB800 0%, #D97706 50%, #B45309 100%);
+        }
+
+        [data-theme="rave"] {
+            --bg-void: #06040D;
+            --bg-surface: rgba(20, 14, 36, 0.86);
+            --bg-card-inner: rgba(168, 85, 247, 0.04);
+            --primary: #A855F7;
+            --primary-light: #E9D5FF;
+            --primary-glow: rgba(168, 85, 247, 0.45);
+            --secondary: #EC4899;
+            --secondary-glow: rgba(236, 72, 153, 0.35);
+            --text-main: #FFFFFF;
+            --text-muted: #A799B7;
+            --border-color: rgba(168, 85, 247, 0.32);
+            --ticket-bg: #0B0716;
+            --gradient-primary: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            background-image: 
+                radial-gradient(circle at 50% 0%, var(--primary-glow) 0%, transparent 45%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .font-display { font-family: 'Orbitron', sans-serif; }
+        .font-sub { font-family: 'Rajdhani', sans-serif; }
+
+        /* Ambient Background Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.65;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), 0 0 25px -5px var(--primary-glow);
+            transition: all 0.35s ease;
+        }
+
+        .glass-subcard {
+            background: var(--bg-card-inner);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            transition: all 0.25s ease;
+        }
+
+        .glass-subcard:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Dynamic Theme Accents */
+        .text-theme-primary { color: var(--primary); }
+        .text-theme-secondary { color: var(--secondary); }
+        .border-theme-primary { border-color: var(--primary); }
+        .bg-theme-gradient { background: var(--gradient-primary); }
+
+        .glow-title {
+            color: var(--primary);
+            text-shadow: 0 0 25px var(--primary-glow), 0 0 55px var(--primary-glow);
+        }
+
+        /* Holographic Single Player Pass Showcase Card */
+        .holo-ticket-showcase {
+            background: linear-gradient(135deg, var(--bg-card-inner) 0%, rgba(18, 18, 26, 0.9) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px -5px var(--primary-glow);
+        }
+
+        .holo-ticket-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transform: skewX(-25deg);
+            animation: holoShine 5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes holoShine {
+            0% { left: -120%; }
+            35%, 100% { left: 160%; }
+        }
+
+        /* Custom Inputs */
+        .cyber-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            color: #FFF;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .cyber-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            background: rgba(0, 0, 0, 0.85);
+        }
+
+        /* Bank Card Selection */
+        .bank-select-card {
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(0, 240, 255, 0.22);
+            border-radius: 14px;
+            padding: 1.1rem;
+            transition: all 0.25s ease;
+        }
+
+        .bank-select-card:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .bank-select-card.selected {
+            border: 2px solid var(--secondary);
+            box-shadow: 0 0 20px var(--secondary-glow);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Primary CTA Button */
+        .btn-primary-glow {
+            background: var(--gradient-primary);
+            color: #FFF;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 24px var(--primary-glow);
+            transition: all 0.25s ease;
+        }
+
+        .btn-primary-glow:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 10px 30px var(--primary-glow);
+        }
+
+        /* Perforated VIP Ticket Styling */
+        .vip-ticket-wrapper {
+            background: var(--ticket-bg);
+            border: 2px solid var(--primary);
+            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 40px var(--primary-glow);
+        }
+
+        .ticket-divider {
+            position: relative;
+            border-top: 2px dashed rgba(255, 255, 255, 0.18);
+            margin: 1.1rem 0;
+        }
+
+        .ticket-notch-left, .ticket-notch-right {
+            position: absolute;
+            top: -12px;
+            width: 22px;
+            height: 22px;
+            background: #000000;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .ticket-notch-left { left: -27px; }
+        .ticket-notch-right { right: -27px; }
+
+        #qrcode img, #qrcode canvas {
+            border: 5px solid #FFFFFF;
+            border-radius: 8px;
+            margin: 0 auto;
+        }
+
+        /* Floating Shapes Animation */
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .animate-shape {
+            animation: pulseGlow 3s infinite ease-in-out;
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #05050A; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen relative selection:bg-pink-500 selection:text-white">
+
+    <!-- Interactive Geometric Particle Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Custom Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ==========================================
+         FLOATING TOP BAR & LIVE STYLE SWITCHER
+         ========================================== -->
+    <nav class="sticky top-3 z-50 max-w-4xl mx-auto px-4">
+        <div class="glass-card px-4 py-3 flex flex-wrap items-center justify-between gap-3 !rounded-2xl">
+            <!-- Brand Identity -->
+            <a href="#" class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-theme-gradient flex items-center justify-center text-white font-display font-black text-base shadow-lg">
+                    R
+                </div>
+                <div>
+                    <div class="font-display font-bold text-sm tracking-wider text-white flex items-center gap-1.5">
+                        REVENANT <span class="text-[11px] px-1.5 py-0.5 rounded bg-white/10 text-theme-primary font-sub">'26</span>
+                    </div>
+                    <div class="text-[10px] text-gray-400 font-sub tracking-widest uppercase">Mahindiyans 2026 A/L</div>
+                </div>
+            </a>
+
+            <!-- Right Controls: Live Style Switcher + View My Pass -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="flex items-center gap-1 bg-black/60 border border-white/15 rounded-full p-1" title="Change Website Style">
+                    <button type="button" onclick="setTheme('cyber')" id="theme-btn-cyber" class="px-3 py-1 rounded-full text-xs font-sub font-bold flex items-center gap-1.5 transition bg-[#FF004E]/20 text-[#FF004E] border border-[#FF004E]/40">
+                        <span class="w-2 h-2 rounded-full bg-[#FF004E]"></span>
+                        <span>Squid Neon</span>
+                    </button>
+                    <button type="button" onclick="setTheme('gold')" id="theme-btn-gold" class="px-3 py-1 rounded-full text-xs font-sub font-bold flex items-center gap-1.5 transition text-gray-400 hover:text-white">
+                        <span class="w-2 h-2 rounded-full bg-[#FFB800]"></span>
+                        <span>VIP Gold</span>
+                    </button>
+                    <button type="button" onclick="setTheme('rave')" id="theme-btn-rave" class="px-3 py-1 rounded-full text-xs font-sub font-bold flex items-center gap-1.5 transition text-gray-400 hover:text-white">
+                        <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                        <span>Cyber Rave</span>
+                    </button>
+                </div>
+
+                <!-- View My Pass Button (Appears when a pass is saved in localStorage) -->
+                <button type="button" id="view-my-pass-btn" onclick="openSavedPass()" class="hidden px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-theme-primary text-xs font-sub font-bold tracking-wider uppercase items-center gap-1.5 text-white transition shadow-lg">
+                    <i class="fa-solid fa-qrcode text-theme-primary"></i>
+                    <span>View My Pass</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==========================================
+         MAIN CONTAINER
+         ========================================== -->
+    <main class="relative z-10 max-w-4xl mx-auto px-4 pt-5 pb-16 space-y-6">
+
+        <!-- 1. HERO HEADER -->
+        <header class="glass-card p-6 sm:p-9 text-center relative overflow-hidden">
+            <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-40 rounded-full blur-3xl opacity-30 pointer-events-none" style="background: var(--primary);"></div>
+
+            <!-- Squid Game Geometric Shapes -->
+            <div class="flex justify-center items-center gap-5 text-2xl sm:text-3xl mb-3 text-theme-primary">
+                <i class="fa-regular fa-circle animate-shape" style="animation-delay: 0s;"></i>
+                <i class="fa-solid fa-play -rotate-90 animate-shape" style="animation-delay: 0.4s;"></i>
+                <i class="fa-regular fa-square animate-shape" style="animation-delay: 0.8s;"></i>
+            </div>
+
+            <span class="inline-block px-4 py-1 rounded-full bg-white/5 border border-theme-primary text-theme-primary font-sub font-bold tracking-[2px] uppercase text-xs sm:text-sm mb-3">
+                Mahindiyans 2026 A/L
+            </span>
+
+            <h1 class="font-display font-black text-4xl sm:text-6xl tracking-[3px] glow-title mb-1">
+                REVENANT
+            </h1>
+            <div class="font-sub font-semibold text-lg sm:text-xl text-theme-secondary tracking-[2.5px] uppercase mb-6">
+                Friendship To The Fullest
+            </div>
+
+            <!-- Event Info Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-4">
+                <div class="glass-subcard p-4 text-center">
+                    <i class="fa-regular fa-calendar-days text-2xl text-theme-primary mb-1.5"></i>
+                    <h4 class="font-sub text-xs tracking-widest uppercase text-gray-400">DATE</h4>
+                    <p class="font-display font-bold text-base text-white mt-0.5">DECEMBER 14</p>
+                </div>
+                <div class="glass-subcard p-4 text-center">
+                    <i class="fa-regular fa-clock text-2xl text-theme-primary mb-1.5"></i>
+                    <h4 class="font-sub text-xs tracking-widest uppercase text-gray-400">TIME</h4>
+                    <p class="font-display font-bold text-base text-white mt-0.5">9.00 AM - 4.00 PM</p>
+                </div>
+                <div class="glass-subcard p-4 text-center">
+                    <i class="fa-solid fa-location-dot text-2xl text-theme-primary mb-1.5"></i>
+                    <h4 class="font-sub text-xs tracking-widest uppercase text-gray-400">VENUE</h4>
+                    <p class="font-display font-bold text-base text-white mt-0.5">Grand City Hotel, Matale</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. GAME STARTS IN (COUNTDOWN) -->
+        <section class="glass-card p-6">
+            <div class="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-white/10">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-stopwatch text-lg text-theme-primary"></i>
+                    <h2 class="font-display font-bold text-base sm:text-lg tracking-wider uppercase">Game Starts In</h2>
+                </div>
+                <span class="text-xs font-sub uppercase tracking-wider text-gray-400">Dec 14, 2026 • 9.00 AM</span>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2.5 sm:gap-4 text-center">
+                <div class="bg-black/50 border border-white/10 rounded-xl p-3 sm:p-4">
+                    <div id="days" class="font-display font-extrabold text-2xl sm:text-4xl text-theme-primary">00</div>
+                    <div class="font-sub uppercase tracking-widest text-[11px] sm:text-xs text-gray-400 mt-1">Days</div>
+                </div>
+                <div class="bg-black/50 border border-white/10 rounded-xl p-3 sm:p-4">
+                    <div id="hours" class="font-display font-extrabold text-2xl sm:text-4xl text-theme-primary">00</div>
+                    <div class="font-sub uppercase tracking-widest text-[11px] sm:text-xs text-gray-400 mt-1">Hours</div>
+                </div>
+                <div class="bg-black/50 border border-white/10 rounded-xl p-3 sm:p-4">
+                    <div id="minutes" class="font-display font-extrabold text-2xl sm:text-4xl text-theme-primary">00</div>
+                    <div class="font-sub uppercase tracking-widest text-[11px] sm:text-xs text-gray-400 mt-1">Mins</div>
+                </div>
+                <div class="bg-black/50 border border-white/10 rounded-xl p-3 sm:p-4">
+                    <div id="seconds" class="font-display font-extrabold text-2xl sm:text-4xl text-theme-secondary">00</div>
+                    <div class="font-sub uppercase tracking-widest text-[11px] sm:text-xs text-gray-400 mt-1">Secs</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TICKET SELECTION & BOOKING FORM (SINGLE PLAYER PASS ONLY) -->
+        <section id="booking" class="glass-card p-6 sm:p-8">
+            <div class="flex items-center gap-2.5 mb-5 pb-3 border-b border-white/10">
+                <i class="fa-solid fa-ticket text-lg text-theme-primary"></i>
+                <h2 class="font-display font-bold text-base sm:text-lg tracking-wider uppercase">Ticket Selection</h2>
+            </div>
+
+            <!-- Single Player Pass Showcase Card (LKR 6,000 ONLY) -->
+            <div class="holo-ticket-showcase p-5 sm:p-6 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="space-y-2">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-theme-secondary font-sub font-bold text-xs uppercase tracking-wider">
+                        <i class="fa-solid fa-star text-[10px]"></i> Official Entry Pass
+                    </div>
+                    <div class="font-display font-extrabold text-lg sm:text-xl text-white tracking-wide">
+                        SINGLE PLAYER PASS
+                    </div>
+                    <p class="text-xs sm:text-sm text-gray-300">Full Day Access + Lunch & DJ</p>
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <span class="px-2.5 py-1 rounded-lg bg-black/50 border border-white/10 text-[11px] font-sub text-gray-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bolt text-theme-primary"></i> Full Day Access
+                        </span>
+                        <span class="px-2.5 py-1 rounded-lg bg-black/50 border border-white/10 text-[11px] font-sub text-gray-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-utensils text-theme-secondary"></i> Buffet Lunch
+                        </span>
+                        <span class="px-2.5 py-1 rounded-lg bg-black/50 border border-white/10 text-[11px] font-sub text-gray-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-compact-disc text-theme-primary"></i> Live DJ
+                        </span>
+                    </div>
+                </div>
+                <div class="sm:text-right shrink-0 border-t sm:border-t-0 border-white/10 pt-3 sm:pt-0 w-full sm:w-auto flex sm:block items-center justify-between">
+                    <span class="text-xs font-sub uppercase tracking-widest text-gray-400 block">Pass Price</span>
+                    <div class="font-display font-black text-2xl sm:text-3xl text-theme-primary">LKR 6,000</div>
+                </div>
+            </div>
+
+            <!-- Core Registration Form -->
+            <form id="booking-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- 1. Full Name -->
+                    <div class="flex flex-col gap-1.5">
+                        <label for="fullname" class="font-sub text-sm text-gray-300">Full Name</label>
+                        <input type="text" id="fullname" class="cyber-input" placeholder="e.g. Nalaka Perera" required>
+                    </div>
+
+                    <!-- 2. WhatsApp Number -->
+                    <div class="flex flex-col gap-1.5">
+                        <label for="whatsapp" class="font-sub text-sm text-gray-300">WhatsApp Number</label>
+                        <input type="tel" id="whatsapp" class="cyber-input" placeholder="07X XXXXXXX" required>
+                    </div>
+
+                    <!-- 3. Student / Index ID -->
+                    <div class="flex flex-col gap-1.5">
+                        <label for="studentid" class="font-sub text-sm text-gray-300">Student / Index ID</label>
+                        <input type="text" id="studentid" class="cyber-input" placeholder="e.g. M26-1042" required>
+                    </div>
+
+                    <!-- 4. Paid Bank Account -->
+                    <div class="flex flex-col gap-1.5">
+                        <label for="bank-select" class="font-sub text-sm text-gray-300">Paid Bank Account</label>
+                        <select id="bank-select" class="cyber-input" required onchange="syncBankCardFromSelect()">
+                            <option value="">-- Select Account --</option>
+                            <option value="BOC - 73868627 (E.M.K.N.Ekanayaka)">BOC - 73868627 (E.M.K.N.Ekanayaka)</option>
+                            <option value="BOC - 82938014 (N.H.Gunawardana)">BOC - 82938014 (N.H.Gunawardana)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Official Payment Accounts (Click to Select & One-Click Copy) -->
+                <div class="pt-1">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                        <label class="font-sub text-sm text-gray-300">Official Payment Accounts</label>
+                        <span class="text-xs font-sub text-theme-secondary">Click a card to select & copy account number</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <!-- Account A -->
+                        <div id="bank-card-1" onclick="chooseBankCard('BOC - 73868627 (E.M.K.N.Ekanayaka)', 'bank-card-1')" class="bank-select-card flex items-center justify-between gap-3">
+                            <div>
+                                <h4 class="font-sub font-bold text-sm text-theme-secondary">BOC (Ukuwela)</h4>
+                                <div class="font-display font-bold text-xl text-white my-0.5">73868627</div>
+                                <p class="text-xs text-gray-400">E.M.K.N.Ekanayaka</p>
+                            </div>
+                            <button type="button" onclick="event.stopPropagation(); copyAccountNo('73868627', 'BOC - 73868627 (E.M.K.N.Ekanayaka)', 'bank-card-1')" class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-sub font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition">
+                                <i class="fa-regular fa-copy text-theme-primary"></i> Copy No
+                            </button>
+                        </div>
+
+                        <!-- Account B -->
+                        <div id="bank-card-2" onclick="chooseBankCard('BOC - 82938014 (N.H.Gunawardana)', 'bank-card-2')" class="bank-select-card flex items-center justify-between gap-3">
+                            <div>
+                                <h4 class="font-sub font-bold text-sm text-theme-secondary">BOC (Ukuwela)</h4>
+                                <div class="font-display font-bold text-xl text-white my-0.5">82938014</div>
+                                <p class="text-xs text-gray-400">N.H.Gunawardana</p>
+                            </div>
+                            <button type="button" onclick="event.stopPropagation(); copyAccountNo('82938014', 'BOC - 82938014 (N.H.Gunawardana)', 'bank-card-2')" class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-sub font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition">
+                                <i class="fa-regular fa-copy text-theme-primary"></i> Copy No
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Upload Payment Slip / Screenshot -->
+                <div class="flex flex-col gap-1.5 pt-1">
+                    <label for="slip-file" class="font-sub text-sm text-gray-300">Upload Payment Slip / Screenshot</label>
+                    <label for="slip-file" id="upload-dropzone" class="flex flex-col items-center justify-center border-2 border-dashed border-white/20 hover:border-theme-primary rounded-2xl p-5 cursor-pointer bg-black/45 transition text-center">
+                        <div id="upload-placeholder" class="space-y-1.5">
+                            <div class="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center mx-auto text-lg text-theme-primary">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <div class="text-sm font-medium text-white">Click or drop your payment slip / screenshot here</div>
+                            <div class="text-xs text-gray-400">Supports Image (JPG, PNG) or PDF</div>
+                        </div>
+
+                        <!-- Live File Preview -->
+                        <div id="upload-preview" class="hidden items-center gap-4 text-left">
+                            <img id="slip-thumb" src="" alt="Payment Slip Preview" class="w-16 h-16 object-cover rounded-xl border border-white/20 hidden">
+                            <div id="slip-icon" class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-file-circle-check"></i>
+                            </div>
+                            <div>
+                                <div id="slip-filename" class="text-sm font-bold text-emerald-400">slip.jpg</div>
+                                <div id="slip-filesize" class="text-xs text-gray-400">Ready for entry verification</div>
+                                <span class="text-[11px] underline text-theme-secondary">Click to change file</span>
+                            </div>
+                        </div>
+                        <input type="file" id="slip-file" accept="image/*,.pdf" class="hidden" required onchange="handleFilePreview(event)">
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-primary-glow w-full py-4 text-sm sm:text-base tracking-wider uppercase flex items-center justify-center gap-2">
+                    <span>CONFIRM & GET DIGITAL PASS</span>
+                    <i class="fa-solid fa-qrcode"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- 4. INQUIRIES & COORDINATORS -->
+        <section class="glass-card p-6">
+            <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/10">
+                <i class="fa-solid fa-phone text-lg text-theme-primary"></i>
+                <h2 class="font-display font-bold text-base sm:text-lg tracking-wider uppercase">Inquiries & Coordinators</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5">
+                <div class="glass-subcard p-3.5 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs text-gray-400 font-sub">Imantha</div>
+                        <a href="https://wa.me/94783308326" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-white hover:text-theme-secondary flex items-center gap-1.5 mt-0.5 transition">
+                            <i class="fa-brands fa-whatsapp text-[#25D366] text-base"></i> 078 330 8326
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-subcard p-3.5 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs text-gray-400 font-sub">Chamod</div>
+                        <a href="https://wa.me/94741714599" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-white hover:text-theme-secondary flex items-center gap-1.5 mt-0.5 transition">
+                            <i class="fa-brands fa-whatsapp text-[#25D366] text-base"></i> 074 171 4599
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-subcard p-3.5 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs text-gray-400 font-sub">Oshan</div>
+                        <a href="https://wa.me/94764258529" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-white hover:text-theme-secondary flex items-center gap-1.5 mt-0.5 transition">
+                            <i class="fa-brands fa-whatsapp text-[#25D366] text-base"></i> 076 425 8529
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-subcard p-3.5 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs text-gray-400 font-sub">Chanuka</div>
+                        <a href="https://wa.me/94723982542" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-white hover:text-theme-secondary flex items-center gap-1.5 mt-0.5 transition">
+                            <i class="fa-brands fa-whatsapp text-[#25D366] text-base"></i> 072 398 2542
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==========================================
+         DIGITAL TICKET PASS MODAL
+         ========================================== -->
+    <div id="ticketModal" onclick="handleBackdropClick(event)" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="w-full max-w-md my-auto space-y-3">
+            <!-- Printable Ticket Pass Card -->
+            <div id="printable-ticket" class="vip-ticket-wrapper p-6 text-center">
+                <button type="button" id="ticket-close-btn" onclick="closeModal()" class="absolute top-3 right-4 text-gray-400 hover:text-white text-2xl leading-none cursor-pointer">&times;</button>
+
+                <div class="text-xs font-sub font-bold tracking-[2px] uppercase text-theme-secondary">
+                    OFFICIAL DIGITAL PASS
+                </div>
+
+                <div id="modal-player-no" class="font-display font-black text-3xl text-theme-primary tracking-wider my-1">
+                    PLAYER #000
+                </div>
+
+                <h3 id="modal-name" class="font-display font-bold text-lg text-white tracking-wide">-</h3>
+                <p id="modal-details" class="text-xs text-gray-300 mt-1">Student ID: -</p>
+                <p id="modal-bank" class="text-[11px] text-theme-secondary mt-0.5">Paid Account: -</p>
+
+                <!-- Perforated Divider -->
+                <div class="ticket-divider">
+                    <div class="ticket-notch-left"></div>
+                    <div class="ticket-notch-right"></div>
+                </div>
+
+                <!-- QR Code Container -->
+                <div id="qrcode" class="my-3 flex justify-center"></div>
+
+                <div class="inline-block px-3 py-0.5 rounded-full bg-white/10 text-theme-primary font-display font-bold text-[11px] mb-2">
+                    SINGLE PLAYER PASS • LKR 6,000
+                </div>
+
+                <p class="text-xs text-gray-300 font-medium">Grand City Hotel, Matale • Dec 14 • 9.00 AM</p>
+                <p class="text-[11px] text-theme-secondary mt-1">Show this QR along with bank slip at entry.</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <button type="button" onclick="downloadTicketImage()" class="py-3.5 px-4 rounded-xl bg-[#00F0FF] hover:opacity-90 text-black font-display font-extrabold text-xs tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer shadow-lg transition">
+                    <i class="fa-solid fa-download"></i> SAVE PASS TO GALLERY
+                </button>
+                <button type="button" onclick="sendWhatsAppPass()" class="py-3.5 px-4 rounded-xl bg-[#25D366] hover:opacity-90 text-black font-display font-extrabold text-xs tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer shadow-lg transition">
+                    <i class="fa-brands fa-whatsapp text-base"></i> SEND ON WHATSAPP
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC
+         ========================================== -->
+    <script>
+        let currentPass = null;
+
+        // Initialize Theme, Countdown, Saved Pass & Background
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const savedTheme = localStorage.getItem('revenant26_theme');
+                if (savedTheme) setTheme(savedTheme, false);
+
+                const savedPassData = localStorage.getItem('revenant26_last_pass');
+                if (savedPassData) {
+                    currentPass = JSON.parse(savedPassData);
+                    const viewBtn = document.getElementById('view-my-pass-btn');
+                    viewBtn.classList.remove('hidden');
+                    viewBtn.classList.add('inline-flex');
+                }
+            } catch (e) {}
+
+            initGeometricCanvas();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+
+        // 1. Live Website Style / Theme Switcher
+        function setTheme(themeName, notify = true) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            try { localStorage.setItem('revenant26_theme', themeName); } catch (e) {}
+
+            const btns = {
+                cyber: document.getElementById('theme-btn-cyber'),
+                gold: document.getElementById('theme-btn-gold'),
+                rave: document.getElementById('theme-btn-rave')
+            };
+
+            Object.values(btns).forEach(btn => {
+                btn.className = 'px-3 py-1 rounded-full text-xs font-sub font-bold flex items-center gap-1.5 transition text-gray-400 hover:text-white';
+            });
+
+            if (themeName === 'cyber') {
+                btns.cyber.className = 'px-3 py-1 rounded-full text-xs font-sub font-bold flex items-center gap-1.5 transition bg-[#FF004E]/20 text-[#FF004E] border border-[#FF004E]/40';
+                if (notify) showToast('Style changed to Squid Neon');
+            } else if (themeName === 'gold') {
+                btns.gold.className = 'px-3 py-1 rounded-full text-xs font-sub font-bold flex items-center gap-1.5 transition bg-[#FFB800]/20 text-[#FFB800] border border-[#FFB800]/40';
+                if (notify) showToast('Style changed to VIP Gold');
+            } else if (themeName === 'rave') {
+                btns.rave.className = 'px-3 py-1 rounded-full text-xs font-sub font-bold flex items-center gap-1.5 transition bg-purple-500/20 text-purple-300 border border-purple-500/40';
+                if (notify) showToast('Style changed to Cyber Rave');
+            }
+        }
+
+        // 2. Countdown Logic (Target: Dec 14, 2026 09:00:00)
+        const partyDate = new Date('December 14, 2026 09:00:00').getTime();
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = partyDate - now;
+            if (diff > 0) {
+                document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+        }
+
+        // 3. Bank Account Copy & Auto-Select
+        function chooseBankCard(selectValue, cardId) {
+            document.getElementById('bank-select').value = selectValue;
+            document.getElementById('bank-card-1').classList.remove('selected');
+            document.getElementById('bank-card-2').classList.remove('selected');
+            document.getElementById(cardId).classList.add('selected');
+        }
+
+        function copyAccountNo(accNum, selectValue, cardId) {
+            chooseBankCard(selectValue, cardId);
+            const temp = document.createElement('textarea');
+            temp.value = accNum;
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand('copy');
+                showToast(`Copied BOC Account ${accNum} & selected!`);
+            } catch (e) {
+                showToast(`Account No: ${accNum}`);
+            }
+            document.body.removeChild(temp);
+        }
+
+        function syncBankCardFromSelect() {
+            const val = document.getElementById('bank-select').value;
+            document.getElementById('bank-card-1').classList.toggle('selected', val.includes('73868627'));
+            document.getElementById('bank-card-2').classList.toggle('selected', val.includes('82938014'));
+        }
+
+        // 4. Live Slip File Preview
+        function handleFilePreview(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('upload-placeholder').classList.add('hidden');
+            const preview = document.getElementById('upload-preview');
+            preview.classList.remove('hidden');
+            preview.classList.add('flex');
+
+            document.getElementById('slip-filename').innerText = file.name;
+            document.getElementById('slip-filesize').innerText = `${(file.size / 1024).toFixed(1)} KB • Ready`;
+
+            const thumb = document.getElementById('slip-thumb');
+            const icon = document.getElementById('slip-icon');
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    thumb.src = e.target.result;
+                    thumb.classList.remove('hidden');
+                    icon.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                thumb.classList.add('hidden');
+                icon.classList.remove('hidden');
+            }
+        }
+
+        // 5. Pass Generation & Modal Display
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('fullname').value.trim();
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+            const studentId = document.getElementById('studentid').value.trim();
+            const bank = document.getElementById('bank-select').value;
+            const randomPlayerNo = 'PLAYER #' + Math.floor(100 + Math.random() * 900);
+
+            currentPass = {
+                playerNo: randomPlayerNo,
+                name: name.toUpperCase(),
+                whatsapp,
+                studentId,
+                bank
+            };
+
+            try {
+                localStorage.setItem('revenant26_last_pass', JSON.stringify(currentPass));
+                const viewBtn = document.getElementById('view-my-pass-btn');
+                viewBtn.classList.remove('hidden');
+                viewBtn.classList.add('inline-flex');
+            } catch (err) {}
+
+            showPassModal(currentPass);
+            showToast(`Digital Pass Generated for ${randomPlayerNo}!`);
+        }
+
+        function showPassModal(pass) {
+            document.getElementById('modal-player-no').innerText = pass.playerNo;
+            document.getElementById('modal-name').innerText = pass.name;
+            document.getElementById('modal-details').innerText = `Student ID: ${pass.studentId}`;
+            document.getElementById('modal-bank').innerText = `Paid: ${pass.bank}`;
+
+            const qrElem = document.getElementById('qrcode');
+            qrElem.innerHTML = '';
+
+            new QRCode(qrElem, {
+                text: `REVENANT_2026|${pass.playerNo}|${pass.name}|${pass.studentId}|LKR_6000`,
+                width: 135,
+                height: 135,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            const modal = document.getElementById('ticketModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function openSavedPass() {
+            if (currentPass) showPassModal(currentPass);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('ticketModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function handleBackdropClick(e) {
+            if (e.target.id === 'ticketModal') closeModal();
+        }
+
+        // 6. Save Ticket Card as PNG
+        function downloadTicketImage() {
+            const ticketCard = document.getElementById('printable-ticket');
+            const closeBtn = document.getElementById('ticket-close-btn');
+            closeBtn.style.display = 'none';
+
+            showToast('Saving pass to your gallery...');
+
+            html2canvas(ticketCard, {
+                backgroundColor: '#0B0B12',
+                scale: 2
+            }).then(canvas => {
+                closeBtn.style.display = 'block';
+                const link = document.createElement('a');
+                link.download = 'REVENANT_26_Pass.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(() => {
+                closeBtn.style.display = 'block';
+                showToast('Please take a screenshot of your pass!');
+            });
+        }
+
+        // 7. Send Pass Details on WhatsApp
+        function sendWhatsAppPass() {
+            if (!currentPass) return;
+            const text = encodeURIComponent(
+                `*REVENANT '26 - DIGITAL PASS*\n` +
+                `• Player No: ${currentPass.playerNo}\n` +
+                `• Name: ${currentPass.name}\n` +
+                `• Student ID: ${currentPass.studentId}\n` +
+                `• Ticket: SINGLE PLAYER PASS (LKR 6,000)\n` +
+                `• Paid Account: ${currentPass.bank}\n\n` +
+                `I am sending my bank payment slip for verification.`
+            );
+            window.open(`https://wa.me/94783308326?text=${text}`, '_blank');
+        }
+
+        // 8. Toast Notification Helper
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'glass-card px-4 py-2.5 text-xs font-sub font-bold tracking-wider text-white flex items-center gap-2 border border-theme-primary shadow-xl';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-theme-primary"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2800);
+        }
+
+        // 9. Floating Squid Game Geometric Shapes Background
+        function initGeometricCanvas() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            });
+
+            const types = ['circle', 'triangle', 'square'];
+            const shapes = Array.from({ length: 24 }, (_, i) => ({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                size: Math.random() * 14 + 8,
+                dx: (Math.random() - 0.5) * 0.4,
+                dy: (Math.random() - 0.5) * 0.4,
+                type: types[i % 3]
+            }));
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                const color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#FF004E';
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1.5;
+                ctx.globalAlpha = 0.22;
+
+                shapes.forEach(s => {
+                    s.x += s.dx;
+                    s.y += s.dy;
+                    if (s.x < 0 || s.x > w) s.dx *= -1;
+                    if (s.y < 0 || s.y > h) s.dy *= -1;
+
+                    ctx.beginPath();
+                    if (s.type === 'circle') {
+                        ctx.arc(s.x, s.y, s.size / 2, 0, Math.PI * 2);
+                    } else if (s.type === 'square') {
+                        ctx.strokeRect(s.x - s.size / 2, s.y - s.size / 2, s.size, s.size);
+                    } else {
+                        ctx.moveTo(s.x, s.y - s.size / 2);
+                        ctx.lineTo(s.x - s.size / 2, s.y + s.size / 2);
+                        ctx.lineTo(s.x + s.size / 2, s.y + s.size / 2);
+                        ctx.closePath();
+                    }
+                    ctx.stroke();
+                });
+
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
